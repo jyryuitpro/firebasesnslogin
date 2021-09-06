@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "968798331734",
+    "project_id": "fir-snslogin-11626",
+    "storage_bucket": "fir-snslogin-11626.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968798331734:android:76641df58e4add159decf7",
+        "android_client_info": {
+          "package_name": "com.anomalo.dev.snslogin.firebasesnslogin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "968798331734-h302flmksv9agthrq5njofu4gggimbeq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anomalo.dev.snslogin.firebasesnslogin",
+            "certificate_hash": "3675cf865892186047edaa4e1b13594218b1f384"
+          }
+        },
+        {
+          "client_id": "968798331734-hbb9i4rbfp0fojlo2hoh88d0pcjnhkhj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMp-qe_6Uo6JhrDW5JOyXwW6B-pcRMq48"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "968798331734-hbb9i4rbfp0fojlo2hoh88d0pcjnhkhj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "968798331734-026kmr7lefscsnq3ace978pe2laopo7i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.anomalo.dev.snslogin.firebasesnslogin"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
