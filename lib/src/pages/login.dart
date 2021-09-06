@@ -114,6 +114,41 @@ class Login extends StatelessWidget {
     return await FirebaseAuth.instance.signInWithCustomToken(responseCustomToken.body);
   }
 
+  Future<UserCredential> signInWithNaver() async {
+    final clientState = Uuid().v4();
+    final url = Uri.https('nid.naver.com', '/oauth2.0/authorize', {
+      'response_type': 'code',
+      'client_id': "ZVXS7NEgwbNjBcvIbJtG",
+      'response_mode': 'form_post',
+      'redirect_uri':
+      'https://silken-whispering-porpoise.glitch.me/callbacks/naver/sign_in_with_naver',
+      'state': clientState,
+    });
+
+    final result = await FlutterWebAuth.authenticate(
+        url: url.toString(), callbackUrlScheme: "webauthcallback");
+
+    final body = Uri.parse(result).queryParameters;
+    print(body);
+    final tokenUrl = Uri.https('nid.naver.com', '/oauth2.0/token', {
+      'grant_type': 'authorization_code',
+      'client_id': "ZVXS7NEgwbNjBcvIbJtG",
+      'client_secret': 'tIve3bOBd6',
+      'state': clientState,
+      'code': body['code'],
+    });
+
+    var response = await http.post(Uri.parse(tokenUrl.toString()));
+    Map<String, dynamic> accessTokenResult = json.decode(response.body);
+
+    var responseCustomToken = await http.post(
+        Uri.parse(
+            'https://silken-whispering-porpoise.glitch.me/callbacks/naver/token'),
+        body: {'accessToken': accessTokenResult['access_token']});
+
+    return await FirebaseAuth.instance.signInWithCustomToken(responseCustomToken.body);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -138,6 +173,11 @@ class Login extends StatelessWidget {
               color: Colors.grey.withOpacity(0.3),
               child: Text('Kakao Login'),
               onPressed: signInWithKakao,
+            ),
+            FlatButton(
+              color: Colors.grey.withOpacity(0.3),
+              child: Text('Naver Login'),
+              onPressed: signInWithNaver,
             ),
           ],
         ),
