@@ -90,11 +90,15 @@ class Login extends StatelessWidget {
       'state': clientState,
     });
 
+    print('process 1');
+
     final result = await FlutterWebAuth.authenticate(
         url: url.toString(), callbackUrlScheme: "webauthcallback");
 
     final body = Uri.parse(result).queryParameters;
-    print(body);
+
+    print('body : $body');
+
     final tokenUrl = Uri.https('kauth.kakao.com', '/oauth/token', {
       'grant_type': 'authorization_code',
       'client_id': "13407065ab978c5016a8048dc6203708",
@@ -103,15 +107,30 @@ class Login extends StatelessWidget {
       'code': body['code'],
     });
 
+    print('process 2');
+
     var response = await http.post(Uri.parse(tokenUrl.toString()));
+
+    print('response : $response');
+    print('response.body : ${response.body}');
+
     Map<String, dynamic> accessTokenResult = json.decode(response.body);
+
+    print('accessTokenResult : $accessTokenResult');
+
+    print('process 3');
 
     var responseCustomToken = await http.post(
         Uri.parse(
             'https://silken-whispering-porpoise.glitch.me/callbacks/kakao/token'),
         body: {'accessToken': accessTokenResult['access_token']});
 
-    return await FirebaseAuth.instance.signInWithCustomToken(responseCustomToken.body);
+    print('responseCustomToken : $responseCustomToken');
+
+    print('process 4');
+
+    return await FirebaseAuth.instance
+        .signInWithCustomToken(responseCustomToken.body);
   }
 
   Future<UserCredential> signInWithNaver() async {
@@ -121,7 +140,7 @@ class Login extends StatelessWidget {
       'client_id': "ZVXS7NEgwbNjBcvIbJtG",
       'response_mode': 'form_post',
       'redirect_uri':
-      'https://silken-whispering-porpoise.glitch.me/callbacks/naver/sign_in_with_naver',
+          'https://silken-whispering-porpoise.glitch.me/callbacks/naver/sign_in_with_naver',
       'state': clientState,
     });
 
@@ -146,7 +165,50 @@ class Login extends StatelessWidget {
             'https://silken-whispering-porpoise.glitch.me/callbacks/naver/token'),
         body: {'accessToken': accessTokenResult['access_token']});
 
-    return await FirebaseAuth.instance.signInWithCustomToken(responseCustomToken.body);
+    return await FirebaseAuth.instance
+        .signInWithCustomToken(responseCustomToken.body);
+  }
+
+  Future<UserCredential> signInWithKakaoWithCallCloudFunctions() async {
+    final clientState = Uuid().v4();
+    final url = Uri.https('kauth.kakao.com', '/oauth/authorize', {
+      'response_type': 'code',
+      'client_id': "13407065ab978c5016a8048dc6203708",
+      'response_mode': 'form_post',
+      'redirect_uri':
+          'https://us-central1-fir-snslogin-11626.cloudfunctions.net/callbacks/kakao/sign_in_with_kakao',
+      'state': clientState,
+    });
+
+    print('url.toString(): ${url.toString()}');
+
+    final result = await FlutterWebAuth.authenticate(
+        url: url.toString(), callbackUrlScheme: "webauthcallback");
+
+    print('result: $result');
+
+    final body = Uri.parse(result).queryParameters;
+    print(body);
+
+    // flutter: {code: OOLGDc96ijBntb6bPatiW9K_Ov0h6eyAEp4i9vnze7zzJG96g8LteW9kCCx3MCEbtjKcXAopcBMAAAF7us6RmA, state: 0cf1c003-ca53-4c69-8099-e3e35b20dbe3}
+    final tokenUrl = Uri.https('kauth.kakao.com', '/oauth/token', {
+      'grant_type': 'authorization_code',
+      'client_id': "13407065ab978c5016a8048dc6203708",
+      'redirect_uri':
+          'https://us-central1-fir-snslogin-11626.cloudfunctions.net/callbacks/kakao/sign_in_with_kakao',
+      'code': body['code'],
+    });
+
+    var response = await http.post(Uri.parse(tokenUrl.toString()));
+    Map<String, dynamic> accessTokenResult = json.decode(response.body);
+
+    var responseCustomToken = await http.post(
+        Uri.parse(
+            'https://us-central1-fir-snslogin-11626.cloudfunctions.net/callbacks/kakao/token'),
+        body: {'accessToken': accessTokenResult['access_token']});
+
+    return await FirebaseAuth.instance
+        .signInWithCustomToken(responseCustomToken.body);
   }
 
   @override
@@ -178,6 +240,11 @@ class Login extends StatelessWidget {
               color: Colors.grey.withOpacity(0.3),
               child: Text('Naver Login'),
               onPressed: signInWithNaver,
+            ),
+            FlatButton(
+              color: Colors.grey.withOpacity(0.3),
+              child: Text('Kakao Login With Call Cloud Functions'),
+              onPressed: signInWithKakaoWithCallCloudFunctions,
             ),
           ],
         ),
