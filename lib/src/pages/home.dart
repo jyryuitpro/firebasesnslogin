@@ -17,6 +17,8 @@ class Home extends StatelessWidget {
           if (!snapshot.hasData) {
             return Login();
           } else {
+            print('===== snapshot: $snapshot =====');
+            print('===== snapshot.data: ${snapshot.data} =====');
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
